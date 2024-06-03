@@ -1,0 +1,32 @@
+pipeline {
+    agent any
+
+    stages {
+        stage('Checkout') {
+            steps {
+                checkout scmGit(branches: [[name: '*/main']], extensions: [], userRemoteConfigs: [[credentialsId: 'github-cred1', url: 'https://github.com/deepti-shitole/Python_test_cases.git']])
+            }
+        }
+        stage('Install Dependencies') {
+            steps {
+                // Install required Python packages
+                bat 'pip install -r requirement.txt'
+            }
+        }
+        stage('Build') {
+            steps {
+                git branch: 'main', url: 'https://github.com/deepti-shitole/Python_test_cases.git'
+                bat 'python func.py'
+            }
+        }
+        stage('Run Tests') {
+            steps {
+                // Run unit tests using pytest
+                bat 'pytest'
+            }
+        }
+        
+                   
+        
+    }
+}
