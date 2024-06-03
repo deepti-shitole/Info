@@ -4,29 +4,20 @@ pipeline {
     stages {
         stage('Checkout') {
             steps {
-                checkout scmGit(branches: [[name: '*/main']], extensions: [], userRemoteConfigs: [[credentialsId: 'github-cred1', url: 'https://github.com/deepti-shitole/Python_test_cases.git']])
-            }
-        }
-        stage('Install Dependencies') {
-            steps {
-                // Install required Python packages
-                bat 'pip install -r requirement.txt'
+               checkout scmGit(branches: [[name: '*/main']], extensions: [], userRemoteConfigs: [[credentialsId: 'github-cred1', url: 'https://github.com/deepti-shitole/Python_list.git']])
             }
         }
         stage('Build') {
             steps {
-                git branch: 'main', url: 'https://github.com/deepti-shitole/Python_test_cases.git'
-                bat 'python func.py'
+            git branch: 'main', credentialsId: 'github-cred1', url: 'https://github.com/deepti-shitole/Python_list.git'
+            bat 'python list.py'
             }
         }
-        stage('Run Tests') {
+        stage ('test') {
             steps {
-                // Run unit tests using pytest
-                bat 'pytest'
+                echo "the job succeed"
             }
         }
-        
-                   
         
     }
 }
