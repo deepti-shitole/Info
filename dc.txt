@@ -1,23 +1,43 @@
 pipeline {
     agent any
-
+    
+    tools {
+        maven 'maven'
+    }
+    
     stages {
         stage('Checkout') {
             steps {
-               checkout scmGit(branches: [[name: '*/main']], extensions: [], userRemoteConfigs: [[credentialsId: 'github-cred1', url: 'https://github.com/deepti-shitole/Python_list.git']])
-            }
-        }
-        stage('Build') {
-            steps {
-            git branch: 'main', credentialsId: 'github-cred1', url: 'https://github.com/deepti-shitole/Python_list.git'
-            bat 'python list.py'
-            }
-        }
-        stage ('test') {
-            steps {
-                echo "the job succeed"
+                checkout scmGit(
+                    branches: [[name: '*/master']], 
+                    extensions: [], 
+                    userRemoteConfigs: [[credentialsId: 'github-cred1', url: 'https://github.com/deepti-shitole/Jenkins_Pipeline.git']]
+                )
             }
         }
         
+        stage('Build') {
+            steps {
+                git credentialsId: 'github-cred1', url: 'https://github.com/deepti-shitole/Jenkins_Pipeline.git'
+            }
+        }
+        
+        stage('Build and Package') {
+            steps {
+                dir("C:\\ProgramData\\Jenkins\\.jenkins\\workspace\\JavaMavenPipeline\\my-app") {
+                    // Run Maven clean and package commands
+                    bat 'mvn -X clean package'
+                }
+            }
+        }
+        
+        stage('Unit Test') {
+            steps {
+                dir("C:\\ProgramData\\Jenkins\\.jenkins\\workspace\\JavaMavenPipeline\\my-app") {
+                    // Run unit tests using Maven
+                    bat 'mvn test'
+                }
+            }
+        }
     }
 }
